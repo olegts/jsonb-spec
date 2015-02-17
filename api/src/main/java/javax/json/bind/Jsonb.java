@@ -59,10 +59,10 @@ import java.io.Writer;
  * builder methods:
  * <pre>{@code
  * // Example 1 - Creating Jsonb using default JsonbBuilder instance provided by default JsonbProvider
- Jsonb jsonb = JsonbBuilder.create();
+ Jsonb jsonb = JsonbBuilder.newJsonb();
 
  // Example 2 - Creating Jsonb instance for a specific provider specified by a class name
- Jsonb jsonb = JsonbBuilder.newBuilder("foo.bar.ProviderImpl).build();
+ Jsonb jsonb = JsonbBuilder.jsonBuilderFrom("foo.bar.ProviderImpl).build();
 
  // Example 3 - Creating Jsonb instance from a custom provider implementation
  Jsonb jsonb = new CustomJsonbBuilder().build();
@@ -76,7 +76,7 @@ import java.io.Writer;
  * <blockquote>
  * Reading (unmarshalling) object content tree from a File:<br><br>
  *    <pre>
- *     Jsonb jsonb = JsonbBuilder.create();
+ *     Jsonb jsonb = JsonbBuilder.newJsonb();
  *     Book book = jsonb.fromJson(new File("jsonfile.json"), Book.class);</pre>
  * If the unmarshal process is unable to unmarshal the JSON content to an object
  * content tree, fatal error is reported that terminates processing by

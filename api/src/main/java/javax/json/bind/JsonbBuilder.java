@@ -40,7 +40,6 @@
 package javax.json.bind;
 
 import javax.json.bind.spi.JsonbProvider;
-import javax.json.spi.JsonProvider;
 
 /**
  * JsonbBuilder class provides the client's entry point to the JSON Binding
@@ -69,18 +68,6 @@ public interface JsonbBuilder {
     public JsonbBuilder withConfig(JsonbConfig config);
 
     /**
-     * Provides a <a href="https://jcp.org/en/jsr/detail?id=353">JSON-P</a> provider
-     * to be used for all <a href="https://jcp.org/en/jsr/detail?id=353">JSON-P</a> related operations.
-     *
-     * @param jsonpProvider
-     *      {@link javax.json.spi.JsonProvider JsonProvider} instance
-     *      to be used by Jsonb to lookup JSON-P implementation.
-     *
-     * @return This {@code JsonbBuilder} instance.
-     */
-    public JsonbBuilder withProvider(JsonProvider jsonpProvider);
-
-    /**
      * Returns a new instance of {@link javax.json.bind.Jsonb Jsonb} based on the
      * parameters and configuration specified previously in this builder.
      *
@@ -105,8 +92,8 @@ public interface JsonbBuilder {
      *
      * @return new {@link javax.json.bind.Jsonb Jsonb} instance.
      */
-    public static Jsonb create() {
-        return JsonbProvider.provider().create().build();
+    public static Jsonb newJsonb() {
+        return jsonBuilder().build();
     }
 
     /**
@@ -120,17 +107,17 @@ public interface JsonbBuilder {
      *
      * @return new {@link javax.json.bind.Jsonb Jsonb} instance.
      */
-    public static Jsonb create(JsonbConfig config) {
-        return JsonbProvider.provider().create().withConfig(config).build();
+    public static Jsonb newJsonbWith(JsonbConfig config) {
+        return jsonBuilder().withConfig(config).build();
     }
 
     /**
-     * Create a new {@code JsonbBuilder} instance as returned by the default
+     * Create new {@code JsonbBuilder} instance using default
      * {@link javax.json.bind.spi.JsonbProvider#provider()} method.
      *
      * @return new {@code JsonbBuilder} instance.
      */
-    public static JsonbBuilder newBuilder() {
+    public static JsonbBuilder jsonBuilder() {
         return JsonbProvider.provider().create();
     }
 
@@ -144,13 +131,13 @@ public interface JsonbBuilder {
      *
      * @return new {@code JsonbBuilder} instance.
      */
-    public static JsonbBuilder newBuilder(final String providerName) {
+    public static JsonbBuilder jsonBuilderFrom(final String providerName) {
         return JsonbProvider.provider(providerName).create();
     }
 
     /**
      * Create a new {@code JsonbBuilder} instance as returned by
-     * {@code provider#create} call.
+     * {@code provider#newJsonb} call.
      *
      * @param provider
      *      {@link javax.json.spi.JsonProvider JsonProvider} instance
@@ -158,7 +145,7 @@ public interface JsonbBuilder {
      *
      * @return new {@code JsonbBuilder} instance.
      */
-    public static JsonbBuilder newBuilder(final JsonbProvider provider) {
+    public static JsonbBuilder jsonBuilderFrom(final JsonbProvider provider) {
         return provider.create();
     }
 

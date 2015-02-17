@@ -39,6 +39,7 @@
  */
 package javax.json.bind;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,120 +77,76 @@ import java.util.Map;
  * @author Martin Grebac, Przemyslaw Bielicki, Eugen Cepoi
  * @since JSON Binding 1.0
  */
-public class JsonbConfig {
-
-    private final Map<String, Object> configuration = new HashMap<>();
+public final class JsonbConfig {
 
     /**
      * Property used to specify whether or not the marshaled
      * JSON data is formatted with linefeeds and indentation.
      */
-    public static final String JSONB_TOJSON_FORMATTING = "jsonb.tojson.formatting";
+    public static final String TO_JSON_FORMATTING = "to.json.formatting";
 
     /**
      * The Jsonb marshalling {@code toJson()} methods will default to this property
      * for encoding of output JSON data. Default value is 'UTF-8'.
      */
-    public static final String JSONB_TOJSON_ENCODING = "jsonb.tojson.encoding";
+    public static final String TO_JSON_ENCODING = "to.json.encoding";
 
     /**
      * The Jsonb unmarshalling {@code fromJson()} methods will default to this
      * property encoding of input JSON data if the encoding cannot be detected
      * automatically.
      */
-    public static final String JSONB_FROMJSON_ENCODING = "jsonb.fromjson.encoding";
+    public static final String FROM_JSON_ENCODING = "from.json.encoding";
 
-    /**
-     * Set the particular configuration property to a new value. The method can
-     * only be used to set one of the standard JSON Binding properties defined in
-     * this class or a provider specific property. Attempting to set an undefined
-     * property will result in a JsonbConfigException being thrown.
-     * See <a href="#supportedProps"> Supported Properties</a>.
-     *
-     * @param name
-     *      The name of the property to be set. This value can either
-     *      be specified using one of the constant fields or a user supplied
-     *      string.
-     * @param value
-     *      The value of the property to be set
-     *
-     * @return This JsonbConfig instance.
-     */
-    public final JsonbConfig setProperty(final String name, final Object value) {
-        configuration.put(name, value);
-        return this;
+    public static JsonbConfigBuilder jsonbConfig(){
+        return new JsonbConfigBuilder();
+    }
+
+    private final Map<String, Object> configuration;
+
+    private JsonbConfig(Map<String, Object> configuration) {
+        this.configuration = configuration;
     }
 
     /**
-     * Return value of particular configuration property. The method can
-     * only be used to retrieve one of the standard JSON Binding properties defined
-     * in this class or a provider specific property. Attempting to get an undefined
-     * property will result in a JsonbConfigException being thrown.
-     * See <a href="#supportedProps"> Supported Properties</a>.
+     * Return value of particular configuration property.
      *
      * @param name
      *      The name of the property to retrieve
-     *
      * @return The value of the requested property
-     *
-     * @throws JsonbConfigException
-     *      when there is an error retrieving the given property or value
-     *      property name
      * @throws IllegalArgumentException if the name parameter is null.
      */
-    public final Object getProperty(final String name) throws JsonbConfigException {
+    public Object getProperty(String name) throws JsonbConfigException {
         return configuration.get(name);
     }
 
-    /**
-     * Property used to specify whether or not the marshaled JSON data is formatted
-     * with linefeeds and indentation.
-     *
-     * Configures value of {@code JSONB_TOJSON_FORMATTING} property.
-     *
-     * @param formatted
-     *      True means marshalled data is formatted, false (default)
-     *      means no formatting.
-     *
-     * @return This JsonbConfig instance.
-     */
-    public final JsonbConfig toJsonFormatting(final Boolean formatted) {
-        return setProperty(JSONB_TOJSON_FORMATTING, formatted);
-    }
+    public static class JsonbConfigBuilder{
 
-    /**
-     * The Jsonb marshalling {@code toJson()} methods will default to this property
-     * for encoding of output JSON data. Default value is 'UTF-8'.
-     *
-     * Configures value of {@code JSONB_TOJSON_ENCODING} property.
-     *
-     * @param encoding
-     *      Valid character encoding as defined in the
-     *      <a href="http://tools.ietf.org/html/rfc7159">RFC 7159</a> and supported by
-     *      Java Platform.
-     *
-     * @return This JsonbConfig instance.
-     */
-    public final JsonbConfig toJsonEncoding(final String encoding) {
-        return setProperty(JSONB_TOJSON_ENCODING, encoding);
-    }
+        private final Map<String, Object> configuration;
 
-    /**
-     * The Jsonb unmarshalling {@code fromJson()} methods will default to this
-     * property encoding of input JSON data if the encoding cannot be detected
-     * automatically.
-     *
-     * Configures value of {@code JSONB_FROMJSON_ENCODING} property.
-     *
-     * @param encoding
-     *      Valid character encoding as defined in the
-     *      <a href="http://tools.ietf.org/html/rfc7159">RFC 7159</a> and supported by
-     *      Java Platform.
-     *
-     * @return This JsonbConfig instance.
-     */
-    public final JsonbConfig fromJsonEncoding(final String encoding) {
-        return setProperty(JSONB_FROMJSON_ENCODING, encoding);
+        public JsonbConfigBuilder() {
+            configuration = new HashMap<>();
+            configuration.put(TO_JSON_FORMATTING, false);
+        }
+
+        public JsonbConfigBuilder withOutputEncoding(Charset encoding){
+            configuration.put(TO_JSON_ENCODING, encoding);
+            return this;
+        }
+
+        public JsonbConfigBuilder withInputEncoding(Charset encoding){
+            configuration.put(FROM_JSON_ENCODING, encoding);
+            return this;
+        }
+
+        public JsonbConfigBuilder prettyFormatted(){
+            configuration.put(TO_JSON_FORMATTING, true);
+            return this;
+        }
+
+        public JsonbConfig build(){
+            return new JsonbConfig(configuration);
+        }
     }
 
 }

@@ -148,13 +148,20 @@ public abstract class JsonbProvider {
         Iterator<JsonbProvider> it = loader.iterator();
         while (it.hasNext()) {
             JsonbProvider provider = it.next();
-            if (provider.getClass().getName().equals(provider.getClass().getName())) {
+            if (providerName.equals(provider.getClass().getName())) {
                 return provider;
             }
         }
 
-        throw new JsonbException("JSON Binding provider " + providerName + " not found",
-                                 new ClassNotFoundException(providerName));
+        try {
+            Class<?> clazz = Class.forName(providerName);
+            return (JsonbProvider) clazz.newInstance();
+        } catch (ClassNotFoundException x) {
+            throw new JsonbException("JSON Binding provider " + DEFAULT_PROVIDER + " not found", x);
+        } catch (Exception x) {
+            throw new JsonbException("JSON Binding provider " + DEFAULT_PROVIDER
+                    + " could not be instantiated: " + x, x);
+        }
     }
 
     /**

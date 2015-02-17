@@ -43,12 +43,14 @@ package examples.runtime;
 import examples.model.Author;
 import examples.model.Book;
 import examples.model.Language;
-import java.nio.charset.StandardCharsets;
-import javax.json.bind.Jsonb;
+import jug.kiev.jsonb.impl.CustomJsonbProvider;
 
-import javax.json.bind.JsonbBuilder;
+import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbConfig;
-import org.eclipse.persistence.json.bind.CustomJsonbBuilder;
+
+import static java.nio.charset.StandardCharsets.UTF_16;
+import static javax.json.bind.JsonbBuilder.*;
+import static javax.json.bind.JsonbConfig.jsonbConfig;
 
 /**
  *
@@ -70,7 +72,7 @@ public class Runtime {
  * Shortcut use
  */
 {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = newJsonb();
 
         /**
          * Write an object content tree using default JSON mapping
@@ -95,7 +97,7 @@ public class Runtime {
  * Default, reuse
  */
 {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = newJsonb();
         String json = jsonb.toJson(book);
         Book b = jsonb.fromJson(json, Book.class);
 }
@@ -104,29 +106,31 @@ public class Runtime {
  * Custom providers
  */
 {
+        Jsonb jsonb;
         // Lookup different provider by provider class name
-        JsonbBuilder.newBuilder("foo.bar.ProviderImpl").build();
+        jsonb = jsonBuilderFrom("jug.kiev.jsonb.impl.CustomJsonbProvider").build();
 
         // Use an explicit implementation of JsonbProvider
-        Jsonb jsonb = new CustomJsonbBuilder().build();
+        jsonb = jsonBuilderFrom(new CustomJsonbProvider()).build();
 }
 
 /**
  * Configuration
  */
-
-    JsonbConfig config = new JsonbConfig()
-                            .fromJsonEncoding(StandardCharsets.UTF_16.name())
-                            .toJsonFormatting(true);
-
+    /*
+        JsonConfig is thread safe and immutable
+        More builder like with more fluent naming
+        Uses Charset class for encoding instead of simple String
+     */
+    JsonbConfig config = jsonbConfig().withInputEncoding(UTF_16).prettyFormatted().build();
 {
     // Default configuration
-    Jsonb jsonb = JsonbBuilder.create(config);
+    Jsonb jsonb = newJsonbWith(config);
     String json = jsonb.toJson(book);
 }
 {
     // Default configuration with specific builder
-    Jsonb jsonb = JsonbBuilder.newBuilder("foo.bar.ProviderImpl")
+    Jsonb jsonb = jsonBuilderFrom("jug.kiev.jsonb.impl.CustomJsonbProvider")
                     .withConfig(config)
                     .build();
     jsonb.toJson(book);
