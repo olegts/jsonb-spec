@@ -122,7 +122,7 @@ public class Runtime {
         More builder like with more fluent naming
         Uses Charset class for encoding instead of simple String
      */
-    JsonbConfig config = jsonbConfig().withInputEncoding(UTF_16).prettyFormatted().build();
+    JsonbConfig config = jsonbConfig().withInputEncoding(UTF_16).withPrettyOutput().build();
 {
     // Default configuration
     Jsonb jsonb = newJsonbWith(config);

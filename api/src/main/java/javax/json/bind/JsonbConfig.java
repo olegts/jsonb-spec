@@ -139,7 +139,7 @@ public final class JsonbConfig {
             return this;
         }
 
-        public JsonbConfigBuilder prettyFormatted(){
+        public JsonbConfigBuilder withPrettyOutput(){
             configuration.put(TO_JSON_FORMATTING, true);
             return this;
         }
