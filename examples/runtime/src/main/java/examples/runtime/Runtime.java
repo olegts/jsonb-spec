@@ -107,7 +107,7 @@ public class Runtime {
  */
 {
         Jsonb jsonb;
-        // Lookup different provider by provider class name
+        // Lookup different lookupProvider by lookupProvider class name
         jsonb = jsonBuilderFrom("jug.kiev.jsonb.impl.CustomJsonbProvider").build();
 
         // Use an explicit implementation of JsonbProvider

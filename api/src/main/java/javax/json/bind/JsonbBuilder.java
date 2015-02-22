@@ -76,7 +76,7 @@ public interface JsonbBuilder {
      *
      * @throws javax.json.bind.JsonbException If an error was encountered while
      * creating the Jsonb instance, such as (but not limited to) no JSON
-     * Binding provider found, or classes provide conflicting annotations.
+     * Binding lookupProvider found, or classes provide conflicting annotations.
      *
      * @throws IllegalArgumentException If there's an error processing the set
      * parameters, such as the non-null parameter is assigned null value, or
@@ -88,7 +88,7 @@ public interface JsonbBuilder {
     /**
      * Create a new {@link javax.json.bind.Jsonb} instance using the default
      * {@code JsonbBuilder} implementation provided as returned from
-     * {@link javax.json.bind.spi.JsonbProvider#provider()} method.
+     * {@link javax.json.bind.spi.JsonbProvider#lookupProvider()} method.
      *
      * @return new {@link javax.json.bind.Jsonb Jsonb} instance.
      */
@@ -99,7 +99,7 @@ public interface JsonbBuilder {
     /**
      * Create a new {@link javax.json.bind.Jsonb} instance using the default
      * {@code JsonbBuilder} implementation provided as returned from
-     * {@link javax.json.bind.spi.JsonbProvider#provider()} method, configured
+     * {@link javax.json.bind.spi.JsonbProvider#lookupProvider()} method, configured
      * with provided configuration.
      *
      * @param config
@@ -113,17 +113,17 @@ public interface JsonbBuilder {
 
     /**
      * Create new {@code JsonbBuilder} instance using default
-     * {@link javax.json.bind.spi.JsonbProvider#provider()} method.
+     * {@link javax.json.bind.spi.JsonbProvider#lookupProvider()} method.
      *
      * @return new {@code JsonbBuilder} instance.
      */
     public static JsonbBuilder jsonBuilder() {
-        return JsonbProvider.provider().create();
+        return JsonbProvider.lookupProvider().newBuilder();
     }
 
     /**
      * Create a new {@code JsonbBuilder} instance as returned by
-     * {@link javax.json.bind.spi.JsonbProvider#provider(String)}
+     * {@link javax.json.bind.spi.JsonbProvider#lookupProvider(String)}
      * method.
      *
      * @param providerName
@@ -132,12 +132,12 @@ public interface JsonbBuilder {
      * @return new {@code JsonbBuilder} instance.
      */
     public static JsonbBuilder jsonBuilderFrom(final String providerName) {
-        return JsonbProvider.provider(providerName).create();
+        return JsonbProvider.lookupProvider(providerName).newBuilder();
     }
 
     /**
      * Create a new {@code JsonbBuilder} instance as returned by
-     * {@code provider#newJsonb} call.
+     * {@code lookupProvider#newJsonb} call.
      *
      * @param provider
      *      {@link javax.json.spi.JsonProvider JsonProvider} instance
@@ -146,7 +146,7 @@ public interface JsonbBuilder {
      * @return new {@code JsonbBuilder} instance.
      */
     public static JsonbBuilder jsonBuilderFrom(final JsonbProvider provider) {
-        return provider.create();
+        return provider.newBuilder();
     }
 
 }

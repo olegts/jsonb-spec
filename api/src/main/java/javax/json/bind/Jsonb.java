@@ -61,10 +61,10 @@ import java.io.Writer;
  * // Example 1 - Creating Jsonb using default JsonbBuilder instance provided by default JsonbProvider
  Jsonb jsonb = JsonbBuilder.newJsonb();
 
- // Example 2 - Creating Jsonb instance for a specific provider specified by a class name
+ // Example 2 - Creating Jsonb instance for a specific lookupProvider specified by a class name
  Jsonb jsonb = JsonbBuilder.jsonBuilderFrom("foo.bar.ProviderImpl).build();
 
- // Example 3 - Creating Jsonb instance from a custom provider implementation
+ // Example 3 - Creating Jsonb instance from a custom lookupProvider implementation
  Jsonb jsonb = new CustomJsonbBuilder().build();
  }</pre>
  *

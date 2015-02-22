@@ -44,7 +44,7 @@
  *
  * <p> {@link javax.json.bind.spi.JsonbProvider JsonbProvider} is an abstract class
  * that provides a service for creating JSON Binding builder implementation instances.
- * A <i>service provider</i> for {@link javax.json.bind.spi.JsonbProvider JsonbProvider} provides an
+ * A <i>service lookupProvider</i> for {@link javax.json.bind.spi.JsonbProvider JsonbProvider} provides an
  * specific implementation by subclassing and implementing the
  * {@link javax.json.bind.JsonbBuilder JsonbBuilder} creation
  * method(s) in {@link javax.json.bind.spi.JsonbProvider JsonbProvider}.

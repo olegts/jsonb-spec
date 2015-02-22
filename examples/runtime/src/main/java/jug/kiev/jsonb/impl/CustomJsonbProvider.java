@@ -6,9 +6,9 @@ import javax.json.bind.spi.JsonbProvider;
 /**
  * @author Oleg Tsal-Tsalko
  */
-public class CustomJsonbProvider extends JsonbProvider{
+public class CustomJsonbProvider implements JsonbProvider{
     @Override
-    public JsonbBuilder create() {
+    public JsonbBuilder newBuilder() {
         return new JsonbBuilderMock();
     }
 }

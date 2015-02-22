@@ -46,24 +46,24 @@ import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbException;
 
 /**
- * Service provider for JSON Binding implementations.
+ * Service lookupProvider for JSON Binding implementations.
  *
  * Provider implementors must implement all abstract methods.
  *
- * API clients can obtain instance of default provider by calling:
+ * API clients can obtain instance of default lookupProvider by calling:
  * <pre>
  * {@code
- JsonbProvider provider = JsonbProvider.provider();
+ JsonbProvider lookupProvider = JsonbProvider.lookupProvider();
  }}</pre>
  *
- * Specific provider instance lookup:
+ * Specific lookupProvider instance lookup:
  * <pre>
  * {@code
- * JsonbProvider provider;
+ * JsonbProvider lookupProvider;
  * try {
- *   JsonbProvider.provider("foo.bar.ProviderImpl");
+ *   JsonbProvider.lookupProvider("foo.bar.ProviderImpl");
  * } catch (JsonbException e) {
- *   // provider not found or could not be instantiated
+ *   // lookupProvider not found or could not be instantiated
  * }}</pre>
  * where '{@code foo.bar.ProviderImpl}' is a vendor implementation class extending
  * {@link javax.json.bind.spi.JsonbProvider} and identified to service loader as
@@ -77,61 +77,54 @@ import javax.json.bind.JsonbException;
  * @see java.util.ServiceLoader
  * @since JSON Binding 1.0
  */
-public abstract class JsonbProvider {
+@FunctionalInterface
+public interface JsonbProvider {
 
     /**
      * A constant representing the name of the default
      * {@link javax.json.bind.spi.JsonbProvider JsonbProvider} implementation class.
      */
-    private static final String DEFAULT_PROVIDER = "org.eclipse.persistence.json.bind.JsonBindingProvider";
+    static final String DEFAULT_PROVIDER = "org.eclipse.persistence.json.bind.JsonBindingProvider";
 
     /**
-     * Creates a JSON Binding provider object by using the
-     * {@link java.util.ServiceLoader#load(Class)} method. The first provider of
+     * Creates a JSON Binding lookupProvider object by using the
+     * {@link java.util.ServiceLoader#load(Class)} method. The first lookupProvider of
      * {@code JsonbProvider} class from list of providers returned by
      * {@code ServiceLoader.load} call is returned. If there are no available
-     * service providers, this method tries to load the default service provider using
+     * service providers, this method tries to load the default service lookupProvider using
      * {@link Class#forName(String)} method.
      *
      * @see java.util.ServiceLoader
      *
-     * @throws JsonbException if there is no provider found, or there is a problem
-     *         instantiating the provider instance.
+     * @throws JsonbException if there is no lookupProvider found, or there is a problem
+     *         instantiating the lookupProvider instance.
      *
      * @return {@code JsonbProvider} instance
      */
     @SuppressWarnings("UseSpecificCatch")
-    public static JsonbProvider provider() {
+    public static JsonbProvider lookupProvider() {
         ServiceLoader<JsonbProvider> loader = ServiceLoader.load(JsonbProvider.class);
         Iterator<JsonbProvider> it = loader.iterator();
         if (it.hasNext()) {
             return it.next();
         }
 
-        try {
-            Class<?> clazz = Class.forName(DEFAULT_PROVIDER);
-            return (JsonbProvider) clazz.newInstance();
-        } catch (ClassNotFoundException x) {
-            throw new JsonbException("JSON Binding provider " + DEFAULT_PROVIDER + " not found", x);
-        } catch (Exception x) {
-            throw new JsonbException("JSON Binding provider " + DEFAULT_PROVIDER
-                                        + " could not be instantiated: " + x, x);
-        }
+        return lookupProvider(DEFAULT_PROVIDER);
     }
 
     /**
-     * Creates a JSON Binding provider object by using the
+     * Creates a JSON Binding lookupProvider object by using the
      * {@link java.util.ServiceLoader#load(Class)} method, matching {@code providerName}.
-     * The first provider of {@code JsonbProvider} class from list of providers returned by
+     * The first lookupProvider of {@code JsonbProvider} class from list of providers returned by
      * {@code ServiceLoader.load} call, matching providerName is returned.
-     * If no such provider is found, JsonbException is thrown.
+     * If no such lookupProvider is found, JsonbException is thrown.
      *
      * @param providerName
      *      Class name ({@code class.getName()}) to be chosen from the list of providers
      *      returned by {@code ServiceLoader.load(JsonbProvider.class)} call.
      *
-     * @throws JsonbException if there is no provider found, or there is a problem
-     *         instantiating the provider instance.
+     * @throws JsonbException if there is no lookupProvider found, or there is a problem
+     *         instantiating the lookupProvider instance.
      *
      * @throws IllegalArgumentException if providerName is null.
      *
@@ -140,26 +133,18 @@ public abstract class JsonbProvider {
      * @return {@code JsonbProvider} instance
      */
     @SuppressWarnings("UseSpecificCatch")
-    public static JsonbProvider provider(final String providerName) {
+    public static JsonbProvider lookupProvider(final String providerName) {
         if (providerName == null) {
             throw new IllegalArgumentException();
-        }
-        ServiceLoader<JsonbProvider> loader = ServiceLoader.load(JsonbProvider.class);
-        Iterator<JsonbProvider> it = loader.iterator();
-        while (it.hasNext()) {
-            JsonbProvider provider = it.next();
-            if (providerName.equals(provider.getClass().getName())) {
-                return provider;
-            }
         }
 
         try {
             Class<?> clazz = Class.forName(providerName);
             return (JsonbProvider) clazz.newInstance();
         } catch (ClassNotFoundException x) {
-            throw new JsonbException("JSON Binding provider " + DEFAULT_PROVIDER + " not found", x);
+            throw new JsonbException("JSON Binding lookupProvider " + DEFAULT_PROVIDER + " not found", x);
         } catch (Exception x) {
-            throw new JsonbException("JSON Binding provider " + DEFAULT_PROVIDER
+            throw new JsonbException("JSON Binding lookupProvider " + DEFAULT_PROVIDER
                     + " could not be instantiated: " + x, x);
         }
     }
@@ -180,6 +165,6 @@ public abstract class JsonbProvider {
      * @throws JsonbException
      *      If an error was encountered while creating the {@link JsonbBuilder} instance.
      */
-    public abstract JsonbBuilder create();
+    JsonbBuilder newBuilder();
 
 }
