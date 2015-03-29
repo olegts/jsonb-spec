@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Type;
 
 /**
  * <p>
@@ -151,6 +152,26 @@ public interface Jsonb {
     <T> T fromJson(String str, Class<T> type) throws JsonbException;
 
     /**
+     * Reads in a JSON data from the specified string and return the resulting
+     * content tree.
+     *
+     * @param str
+     *      The string to unmarshal JSON data from.
+     * @param type
+     *      Type of the content tree's root object.
+     * @param <T>
+     *      Type of the content tree's root object.
+     *
+     * @return the newly created root object of the java content tree
+     *
+     * @throws JsonbException
+     *     If any unexpected error(s) occur(s) while unmarshalling.
+     * @throws NullPointerException
+     *      If any of the parameters is {@code null}.
+     */
+    <T> T fromJson(String str, Type type) throws JsonbException;
+
+    /**
      * Unmarshal JSON data from the specified Reader and return the
      * resulting content tree.
      *
@@ -229,6 +250,26 @@ public interface Jsonb {
      * @since JSON Binding 1.0
      */
     String toJson(Object object) throws JsonbException;
+
+    /**
+     * Writes the Java object tree with root object {@code object} to a String
+     * instance as JSON.
+     *
+     * @param object
+     *      The root object of the object content tree to be marshaled. Must not be null.
+     * @param type
+     *      Type of the content tree's root object.
+     *
+     * @return String instance with marshaled JSON data.
+     *
+     * @throws JsonbException If any unexpected problem occurs during the
+     * marshalling, such as I/O error.
+     * @throws NullPointerException
+     *      If any of the parameters is {@code null}.
+     *
+     * @since JSON Binding 1.0
+     */
+    String toJson(Object object, Type type) throws JsonbException;
 
     /**
      * Marshal the object content tree into a file.
